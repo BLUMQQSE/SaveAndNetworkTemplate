@@ -23,8 +23,10 @@ public partial class SaveManager : Node
     public event Action<string> ChangedSave;
 
     private List<(string, bool)> LoadQueue = new List<(string, bool)>();
+    [Export]
     private bool LoadQueueHalted = false;
     private List<Node> SaveQueue = new List<Node>();
+    [Export]
     private bool SaveQueueHalted = false;
 
     public SaveManager() 
@@ -87,24 +89,35 @@ public partial class SaveManager : Node
     {
         if (SaveQueue.Contains(rootNode))
             return;
+
+        GD.Print("adding to queue " + rootNode.Name);
+
         if (SaveQueue.Count == 0 && LoadQueue.Count == 0)
         {
+            GD.Print("queues empty, go in");
             SaveQueue.Add(rootNode);
             SaveFromQueue();
+            return;
         }
         else if (LoadQueue.Count > 0)
         {
             if (LoadQueue[0].Item1 == rootNode.Name)
             {
+                GD.Print("We need to halt save queue");
                 SaveQueueHalted = true;
                 Node rootDup = rootNode.Duplicate(14);
                 SaveQueue.Add(rootDup);
+                return;
             }
-            else if (SaveQueue.Count == 1)
+            else if (SaveQueue.Count == 0)
             {
+                GD.Print("your free to enter");
+                SaveQueue.Add(rootNode);
                 SaveFromQueue();
+                return;
             }   
         }
+        SaveQueue.Add(rootNode);
     }
     
 	public void Load(string fileName, bool player = false)
@@ -341,20 +354,14 @@ public partial class SaveManager : Node
 
     private void SaveFromQueue()
     {
-        // while loop a safety check to varify any nodes intended to be saved still exists
-        while (SaveQueue.Count > 0)
-        {
-            if (SaveQueue[0] != null)
-                break;
-            else
-                SaveQueue.RemoveAt(0);
-        }
-
         if (SaveQueue.Count == 0)
             return;
 
         Node rootNode = SaveQueue[0];
-        JsonValue data = SaveManager.ConvertNodeToJson(rootNode);
+        GD.Print("Saving " + rootNode.Name);
+        JsonValue data = ConvertNodeToJson(rootNode);
+        GD.Print(data.ToFormattedString());
+        
 
         if (!rootNode.HasMeta(Globals.Meta.OwnerId.ToString()))
             FileManager.SaveToFileFormattedAsync(data, "saves/" + CurrentSave + "/levels/" + rootNode.Name);
@@ -415,7 +422,6 @@ public partial class SaveManager : Node
 
     private void OnFileSavedDeferred(string obj)
     {
-
         if (LoadQueueHalted)
         {
             LoadQueueHalted = false;
@@ -423,8 +429,10 @@ public partial class SaveManager : Node
         }
         
         SaveQueue.RemoveAt(0);
+        GD.Print("FLAG");
         if(SaveQueue.Count > 0)
         {
+            GD.Print("finished saving, but queue aint empty baby");
             SaveFromQueue();
         }
     }
