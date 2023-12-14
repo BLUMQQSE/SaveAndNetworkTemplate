@@ -75,6 +75,12 @@ public partial class ResourceManager : Node
         }
     }
 
+    public void SaveResourcePathsToFile()
+    {
+
+    }
+
+
     /// <summary>Takes in a scene file name, and returns the full path from res://. The input
     /// string can include the .tscn extension or not.</summary>
     /// <returns>The full path extending beyond res:// where the scene is located. Ex.

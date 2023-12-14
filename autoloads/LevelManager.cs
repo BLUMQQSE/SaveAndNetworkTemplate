@@ -44,62 +44,66 @@ public partial class LevelManager : Node
         base._Process(delta);
     }
 
-    public void AddNode(Node owner, Node node)
-    {
-        string sceneName = node.Name;
-        if (owner.HasMeta(Globals.Meta.LevelPartitionName.ToString()))
-            sceneName = owner.GetMeta(Globals.Meta.LevelPartitionName.ToString()).ToString();
-
-        if (node.HasMeta(Globals.Meta.OwnerId.ToString()))
-        {
-            if (!node.HasMeta(Globals.Meta.LevelPartitionName.ToString()))
-                node.SetMeta(Globals.Meta.LevelPartitionName.ToString(), SaveManager.Instance.StartUpScene);
-
-            sceneName = node.GetMeta(Globals.Meta.LevelPartitionName.ToString()).ToString();
-
-            if (node is Node2D n2)
-                n2.Position += new Vector2(LevelPartitions[sceneName].Offset.X, LevelPartitions[sceneName].Offset.Y);
-            if (node is Node3D n3)
-                n3.Position += LevelPartitions[sceneName].Offset;
-
-            LevelPartitions[sceneName].AddPlayer(node as Player);
-        }
-        else
-        {
-            LevelPartitions[sceneName].AddNode(node);
-        }
-
-    }
-
-    public void RemoveNode(Node node)
-    {
-        string scene = node.GetMeta(Globals.Meta.LevelPartitionName.ToString()).ToString();
-
-        if (node.HasMeta(Globals.Meta.OwnerId.ToString()))
-        {
-            if (node is Node2D n2)
-                n2.Position -= new Vector2(LevelPartitions[scene].Offset.X, LevelPartitions[scene].Offset.Y);
-            if (node is Node3D n3)
-                n3.Position -= LevelPartitions[scene].Offset;
-
-            SaveManager.Instance.Save(node);
-
-            LevelPartitions[scene].RemovePlayer(node as Player);
-        }
-        else
-        {
-            // safety check to verify partition has not been fully closed already
-            if(LevelPartitions.ContainsKey(scene))
-                LevelPartitions[scene].RemoveNode(node);
-        }
-    }
-
     public bool HasLocalPlayers(string sceneName)
     {
         if (LevelPartitions.ContainsKey(sceneName))
             return LevelPartitions[sceneName].LocalPlayers.Count > 0;
 
         return false;
+    }
+
+    public bool LevelNameExists(string levelName)
+    {
+        return LevelPartitions.ContainsKey(levelName);
+    }
+
+    public void ConvertNodeToLevel(Node levelToBe)
+    {
+        if (LevelNameExists(levelToBe.Name))
+            throw new Exception(levelToBe.Name + " cannot be converted to a level, a level with this name already exists");
+
+        SaveManager.Instance.Save(levelToBe);
+    }
+
+    public void CreateLevelFromOriginalLevel(string levelOriginalName, string newLevelName)
+    {
+        if (!ResourceManager.Instance.LevelPaths.ContainsKey(levelOriginalName))
+            throw new Exception(levelOriginalName + " is not an og level");
+        Node root;
+
+        root = GD.Load<PackedScene>(ResourceManager.Instance.GetLevelPath(levelOriginalName)).Instantiate<Node>();
+        root.Name = newLevelName;
+        SaveManager.Instance.Save(root);
+
+        root.SafeQueueFree();
+    }
+
+    public void CreateLevelFromLevel(string levelName, string newLevelName)
+    {
+        if (!AllLevels.Contains(levelName))
+            throw new Exception(levelName + " is not a level");
+        if (AllLevels.Contains(newLevelName))
+            throw new Exception(newLevelName + " is already a level");
+        if (!LevelPartitions.ContainsKey(levelName))
+            throw new Exception(levelName + " is not open to copy");
+
+        Node root = LevelPartitions[levelName].Root.Duplicate(14);
+        SaveManager.Instance.Save(root);
+
+        root.SafeQueueFree();
+    }
+
+    public void CreateLevelFromScene(string sceneName, string newLevelName)
+    {
+        if (!ResourceManager.Instance.ScenePaths.ContainsKey(sceneName))
+            throw new Exception(sceneName + " is not an og level");
+        Node root;
+
+        root = GD.Load<PackedScene>(ResourceManager.Instance.GetScenePath(sceneName)).Instantiate<Node>();
+        root.Name = newLevelName;
+        SaveManager.Instance.Save(root);
+
+        root.SafeQueueFree();
     }
 
     private void TransferPlayer(Node player, string scene, bool firstLoad)
@@ -241,6 +245,56 @@ public partial class LevelManager : Node
         NetworkDataManager.Instance.RemoveServerNode(GetTree().CurrentScene.GetNode(levelName));
     }
 
+    public void AddNode(Node owner, Node node)
+    {
+        string sceneName = node.Name;
+        if (owner.HasMeta(Globals.Meta.LevelPartitionName.ToString()))
+            sceneName = owner.GetMeta(Globals.Meta.LevelPartitionName.ToString()).ToString();
+
+        if (node.HasMeta(Globals.Meta.OwnerId.ToString()))
+        {
+            if (!node.HasMeta(Globals.Meta.LevelPartitionName.ToString()))
+                node.SetMeta(Globals.Meta.LevelPartitionName.ToString(), SaveManager.Instance.StartUpScene);
+
+            sceneName = node.GetMeta(Globals.Meta.LevelPartitionName.ToString()).ToString();
+
+            if (node is Node2D n2)
+                n2.Position += new Vector2(LevelPartitions[sceneName].Offset.X, LevelPartitions[sceneName].Offset.Y);
+            if (node is Node3D n3)
+                n3.Position += LevelPartitions[sceneName].Offset;
+
+            LevelPartitions[sceneName].AddPlayer(node as Player);
+        }
+        else
+        {
+            LevelPartitions[sceneName].AddNode(node);
+        }
+
+    }
+
+    public void RemoveNode(Node node)
+    {
+        string scene = node.GetMeta(Globals.Meta.LevelPartitionName.ToString()).ToString();
+
+        if (node.HasMeta(Globals.Meta.OwnerId.ToString()))
+        {
+            if (node is Node2D n2)
+                n2.Position -= new Vector2(LevelPartitions[scene].Offset.X, LevelPartitions[scene].Offset.Y);
+            if (node is Node3D n3)
+                n3.Position -= LevelPartitions[scene].Offset;
+
+            SaveManager.Instance.Save(node);
+
+            LevelPartitions[scene].RemovePlayer(node as Player);
+        }
+        else
+        {
+            // safety check to verify partition has not been fully closed already
+            if (LevelPartitions.ContainsKey(scene))
+                LevelPartitions[scene].RemoveNode(node);
+        }
+    }
+
     private void CollectAllLevels()
     {
         AllLevels.Clear();
@@ -257,6 +311,8 @@ public partial class LevelManager : Node
     private void SavingSaveCompleteCallback(string obj) { CallDeferred(nameof(SavingSaveCompleteCallbackDeferred), obj); }
     private void SavingSaveCompleteCallbackDeferred(string obj)
     {
+        CollectAllLevels();
+
         if (PartitionsQueuedClose.Count == 0)
             return;
 
@@ -266,7 +322,6 @@ public partial class LevelManager : Node
             LevelPartitions.Remove(obj);
 
             NetworkDataManager.Instance.RemoveServerNode(GetTree().CurrentScene.GetNode(obj));
-            //GetTree().CurrentScene.GetNode(obj).SafeQueueFree();
         }
     }
 
@@ -308,9 +363,9 @@ public partial class LevelManager : Node
         else if (node is Node2D n2)
             n2.Position += new Vector2(offset.X, offset.Z);
 
-        GD.Print("adding "+node.Name + " to network");
         NetworkDataManager.Instance.AddServerNode(GetTree().CurrentScene, node);
-        //GetTree().CurrentScene.AddChild(node);
+
+        CollectAllLevels();
 
         if (PlayersQueuedToMove.Count == 0)
             return;

@@ -71,7 +71,7 @@ public partial class MainMenu : Control
         SaveManager.Instance.CreateSave("DefaultSave");
         LevelManager.Instance.CloseLevelPartitionWithoutSaving("MainMenu");
 
-        LevelManager.Instance.LoadLevelPartition("World");
+
         LevelManager.Instance.InstantiatePlayer(SteamManager.Instance.PlayerId, SteamManager.Instance.PlayerName);
 
         SteamManager.Instance.CreateLobby("Default");

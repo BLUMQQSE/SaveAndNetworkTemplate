@@ -91,24 +91,20 @@ public partial class SaveManager : Node
         {
             SaveQueue.Add(rootNode);
             SaveFromQueue();
-            return;
         }
         else if (LoadQueue.Count > 0)
         {
             if (LoadQueue[0].Item1 == rootNode.Name)
             {
                 SaveQueueHalted = true;
-                return;
+                Node rootDup = rootNode.Duplicate(14);
+                SaveQueue.Add(rootDup);
             }
             else if (SaveQueue.Count == 1)
             {
                 SaveFromQueue();
-                return;
             }   
         }
-        Node rootDup = rootNode.Duplicate(14);
-        SaveQueue.Add(rootDup);
-        
     }
     
 	public void Load(string fileName, bool player = false)
