@@ -1,0 +1,56 @@
+{
+    "scripts": 
+    {
+        "EventSystem": "autoloads/EventSystem.cs",
+        "Helper": "autoloads/Helper.cs",
+        "LevelManager": "autoloads/LevelManager.cs",
+        "NetworkDataManager": "autoloads/NetworkDataManager.cs",
+        "NetworkManager": "autoloads/NetworkManager.cs",
+        "ResourceManager": "autoloads/ResourceManager.cs",
+        "SaveManager": "autoloads/SaveManager.cs",
+        "SteamDataManager": "autoloads/SteamDataManager.cs",
+        "SteamManager": "autoloads/SteamManager.cs",
+        "Event": "classes/Event.cs",
+        "JsonValue": "classes/JsonValue.cs",
+        "MultiMap": "classes/MultiMap.cs",
+        "NetworkInput": "network_components/NetworkInput.cs",
+        "NetworkTransform": "network_components/NetworkTransform.cs",
+        "DataConverter": "static_classes/DataConverter.cs",
+        "FileManager": "static_classes/FileManager.cs",
+        "Globals": "static_classes/Globals.cs",
+        "BMArea3D": "scripts/bm_wrappers_3D/BMArea3D.cs",
+        "BMAudioStreamPlayer3D": "scripts/bm_wrappers_3D/BMAudioStreamPlayer3D.cs",
+        "BMCamera3D": "scripts/bm_wrappers_3D/BMCamera3D.cs",
+        "BMCharacter3D": "scripts/bm_wrappers_3D/BMCharacter3D.cs",
+        "BMCollisionShape3D": "scripts/bm_wrappers_3D/BMCollisionShape3D.cs",
+        "BMCSGBox3D": "scripts/bm_wrappers_3D/BMCSGBox3D.cs",
+        "BMDirLight3D": "scripts/bm_wrappers_3D/BMDirLight3D.cs",
+        "BMLabel3D": "scripts/bm_wrappers_3D/BMLabel3D.cs",
+        "BMMeshInstance3D": "scripts/bm_wrappers_3D/BMMeshInstance3D.cs",
+        "BMOmniLight3D": "scripts/bm_wrappers_3D/BMOmniLight3D.cs",
+        "BMShapeCast3D": "scripts/bm_wrappers_3D/BMShapeCast3D.cs",
+        "BMStaticBody3D": "scripts/bm_wrappers_3D/BMStaticBody3D.cs",
+        "BMArea2D": "scripts/bm_wrapper_2D/BMArea2D.cs",
+        "BMButton": "scripts/bm_wrapper_2D/BMButton.cs",
+        "BMCharacter2D": "scripts/bm_wrapper_2D/BMCharacter2D.cs",
+        "BMCollisionShape2D": "scripts/bm_wrapper_2D/BMCollisionShape2D.cs",
+        "BMLabel2D": "scripts/bm_wrapper_2D/BMLabel2D.cs",
+        "BMLineEdit": "scripts/bm_wrapper_2D/BMLineEdit.cs",
+        "BMPanel": "scripts/bm_wrapper_2D/BMPanel.cs",
+        "BMSprite2D": "scripts/bm_wrapper_2D/BMSprite2D.cs",
+        "Player": "scripts/entities/Player.cs",
+        "AudioData": "scripts/resources/AudioData.cs",
+        "MainMenu": "scripts/ui/MainMenu.cs"
+    },
+    "scenes": 
+    {
+        "MainCamera": "scenes/MainCamera.tscn",
+        "Player": "scenes/Player.tscn"
+    },
+    "levels": 
+    {
+        "Main": "levels/Main.tscn",
+        "MainMenu": "levels/MainMenu.tscn",
+        "World": "levels/World.tscn"
+    }
+}
