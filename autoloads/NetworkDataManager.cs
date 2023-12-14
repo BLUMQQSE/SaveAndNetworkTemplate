@@ -187,7 +187,7 @@ public abstract partial class NetworkDataManager : Node, IListener
         }
 
         bool levelless = false;
-        if (!owner.HasMeta(Globals.Meta.LevelPartitionName.ToString()))
+        if (!owner.HasMeta(Globals.Meta.LevelPartitionName.ToString()) && !newNode.HasMeta(Globals.Meta.LevelPartitionName.ToString()))
         {
             if (!LevelManager.Instance.LevelPartitions.ContainsKey(newNode.Name))
                 levelless = true;
@@ -195,8 +195,10 @@ public abstract partial class NetworkDataManager : Node, IListener
 
 
         if (!persistent || levelless)
+        {
+            GD.Print("adding " + newNode.Name + " to not persistent");
             newNode.AddToGroup(Globals.Groups.NotPersistent.ToString());
-
+        }
         if (positionOverride != Vector3.Zero)
         {
             if (newNode is Node2D n2d)
