@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cg4o54xxr5v4e"]
+
+[ext_resource type="Script" path="res://scripts/bm_wrappers_3D/BMCamera3D.cs" id="1_fm5n3"]
+
+[node name="MainCamera" type="Camera3D"]
+script = ExtResource("1_fm5n3")

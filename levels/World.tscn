@@ -1,0 +1,45 @@
+[gd_scene load_steps=9 format=3 uid="uid://df3o4epxsiwjf"]
+
+[ext_resource type="Script" path="res://scripts/bm_wrappers_3D/BMStaticBody3D.cs" id="1_5a7bc"]
+[ext_resource type="Script" path="res://scripts/bm_wrappers_3D/BMMeshInstance3D.cs" id="2_i74lc"]
+[ext_resource type="Script" path="res://scripts/bm_wrappers_3D/BMCollisionShape3D.cs" id="3_38iam"]
+[ext_resource type="Script" path="res://scripts/bm_wrappers_3D/BMDirLight3D.cs" id="4_0xeti"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_tyawp"]
+size = Vector3(20, 1, 20)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0xbqd"]
+size = Vector3(20, 1, 20)
+
+[sub_resource type="SphereMesh" id="SphereMesh_51tp5"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ywxcs"]
+
+[node name="World" type="Node3D"]
+
+[node name="Floor" type="StaticBody3D" parent="."]
+script = ExtResource("1_5a7bc")
+
+[node name="BMMeshInstance3D" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("BoxMesh_tyawp")
+script = ExtResource("2_i74lc")
+
+[node name="BMCollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("BoxShape3D_0xbqd")
+script = ExtResource("3_38iam")
+
+[node name="Sphere" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.27066, 1.82254, 0)
+script = ExtResource("1_5a7bc")
+
+[node name="BMMeshInstance3D" type="MeshInstance3D" parent="Sphere"]
+mesh = SubResource("SphereMesh_51tp5")
+script = ExtResource("2_i74lc")
+
+[node name="BMCollisionShape3D" type="CollisionShape3D" parent="Sphere"]
+shape = SubResource("SphereShape3D_ywxcs")
+script = ExtResource("3_38iam")
+
+[node name="BMDirLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.855283, 0.518161, 0, -0.518161, 0.855283, 2.23104, 3.61651, 0)
+script = ExtResource("4_0xeti")

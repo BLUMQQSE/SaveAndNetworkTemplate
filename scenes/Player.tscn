@@ -1,0 +1,29 @@
+[gd_scene load_steps=7 format=3 uid="uid://cw8gd65uebrgj"]
+
+[ext_resource type="Script" path="res://scripts/entities/Player.cs" id="1_kl7p2"]
+[ext_resource type="Script" path="res://scripts/bm_wrappers_3D/BMMeshInstance3D.cs" id="2_0s4px"]
+[ext_resource type="Script" path="res://network_components/NetworkTransform.cs" id="2_uhmxm"]
+[ext_resource type="Script" path="res://scripts/bm_wrappers_3D/BMCollisionShape3D.cs" id="4_8vjxp"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ya6at"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_fsomv"]
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_kl7p2")
+
+[node name="NetworkTransform" type="Node" parent="."]
+script = ExtResource("2_uhmxm")
+
+[node name="BMMeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_ya6at")
+script = ExtResource("2_0s4px")
+
+[node name="BMCollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_fsomv")
+script = ExtResource("4_8vjxp")
+
+[node name="CameraHolder" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.631651, 0.775253, 0, -0.775253, 0.631651, 0, 8.02022, 5.34142)
